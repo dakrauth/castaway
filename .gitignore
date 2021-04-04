@@ -1,0 +1,8 @@
+*.pyc
+.tox/
+.coverage
+__pycache__
+castaway.egg-info/
+venv/
+htmlcov/
+temp/

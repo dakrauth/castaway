@@ -22,12 +22,12 @@ def test_default_config(set_cwd):
 
 
 def test_bool(cfg):
-    assert cfg('CASTAWAY_TRUE', cast=bool) == True
-    assert cfg('CASTAWAY_TRUE_1', cast=bool) == True
-    assert cfg('CASTAWAY_TRUE_ON', cast=bool) == True
-    assert cfg('CASTAWAY_TRUE_Y', cast=bool) == True
-    assert cfg('CASTAWAY_TRUE_YES', cast=bool) == True
-    assert cfg('CASTAWAY_NOT_TRUE', cast=bool) == False
+    assert cfg('CASTAWAY_TRUE', cast=bool) is True
+    assert cfg('CASTAWAY_TRUE_1', cast=bool) is True
+    assert cfg('CASTAWAY_TRUE_ON', cast=bool) is True
+    assert cfg('CASTAWAY_TRUE_Y', cast=bool) is True
+    assert cfg('CASTAWAY_TRUE_YES', cast=bool) is True
+    assert cfg('CASTAWAY_NOT_TRUE', cast=bool) is False
 
 
 def test_emoji(cfg):
@@ -51,7 +51,7 @@ def test_override():
 
 
 def test_not_overridden(cfg):
-        assert cfg('CASTAWAY_OVERRIDDEN') != 'I should be overridden'
+    assert cfg('CASTAWAY_OVERRIDDEN') != 'I should be overridden'
 
 
 def test_required_failure(cfg):

@@ -6,3 +6,4 @@ castaway.egg-info/
 venv/
 htmlcov/
 temp/
+.python-version

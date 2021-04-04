@@ -10,6 +10,23 @@ strings to various data types.
 
 .. _python-dotenv: https://pypi.org/project/python-dotenv/
 
+Installation
+------------
+
+Standard install:
+
+.. code::
+
+    pip install castaway
+
+
+If you want Django integration (``dj-email-url``, ``dj-database-url``), do:
+
+.. code::
+
+    pip install castaway[django]
+
+
 Example
 -------
 

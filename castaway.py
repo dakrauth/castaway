@@ -5,8 +5,7 @@ required = object()
 
 
 def cast_bool(val):
-    val = val.lower()
-    return val in {'1', 'yes', 'true', 'y', 'on'} if isinstance(val, str) else bool(val)
+    return val.lower() in {'1', 'yes', 'true', 'y', 'on'} if isinstance(val, str) else bool(val)
 
 
 def cast_list(val):

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+TIMEFORMAT="Task completed in %3lR"
+BIN="./venv/bin"
+
+function help {
+    echo "Options:"
+    echo "    init:     Setup dev environment"
+    echo "    lint:     Linter"
+    echo "    check:    Formatting checks"
+    echo "    format:   Run formatter"
+    echo "    test:     Execute tests"
+    echo "    coverage: Run tests with code coverage"
+    echo "    clean:    Remove dev, test, and build artifacts"
+}
+
+function init {
+    python3 -m venv --prompt castaway venv
+    "${BIN}/python" -m pip install -e ".[django,test]"
+}
+
+function lint {
+    "${BIN}/ruff" check castaway.py tests
+}
+
+function check {
+    "${BIN}/ruff" format --check --diff src/castaway tests
+}
+
+function format {
+    "${BIN}/ruff" format src/castaway tests
+}
+
+function test {
+    "${BIN}/pytest" -s -Werror tests "$@"
+}
+
+function clean {
+    rm -rf .ruff_cache .tox htmlcov .coverage dist pytest_cache src/castaway.egg-info
+}
+
+function coverage {
+    "${BIN}/pytest" \
+        --cov-report html \
+        --cov-report term \
+        --cov=castaway
+}
+
+if [ -z "$1" ]; then
+    help
+else
+    what=$1
+    shift
+    time ${what:-help} "$@"
+fi

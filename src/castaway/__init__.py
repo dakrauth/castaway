@@ -1,15 +1,12 @@
 import os
+from pathlib import Path
 import dotenv
 
 required = object()
 
 
 def cast_bool(val):
-    return (
-        val.lower() in {"1", "yes", "true", "y", "on"}
-        if isinstance(val, str)
-        else bool(val)
-    )
+    return val.lower() in {"1", "yes", "true", "y", "on"} if isinstance(val, str) else bool(val)
 
 
 def cast_list(val):
@@ -30,8 +27,11 @@ def cast_django_email(val):
 
 class Config:
     def __init__(self, filename=".env", **castings):
-        self.filename = filename
-        self.found_path = None
+        if isinstance(filename, (str, Path)):
+            filename = [filename]
+
+        self.filename = [str(f) for f in filename]
+        self.found_path = []
 
         self.castings = {
             bool: cast_bool,
@@ -40,12 +40,15 @@ class Config:
             "django_email": cast_django_email,
         }
         self.castings.update(**castings)
+        self.values = {}
+        for path in self.filename:
+            if os.path.exists(path):
+                found = path
+            else:
+                found = dotenv.find_dotenv(path, usecwd=True)
 
-        if os.path.exists(self.filename):
-            self.found_path = self.filename
-        else:
-            self.found_path = dotenv.find_dotenv(self.filename, usecwd=True)
-        self.values = dotenv.dotenv_values(self.found_path, verbose=True)
+            self.found_path.append(found)
+            self.values.update(**dotenv.dotenv_values(found, verbose=True))
 
     def add_castings(self, **kwargs):
         self.castings.update(kwargs)

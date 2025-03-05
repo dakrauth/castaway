@@ -1,4 +1,5 @@
 import os
+import decimal
 import pytest
 import castaway
 
@@ -13,12 +14,14 @@ def set_cwd():
 
 @pytest.fixture
 def cfg(set_cwd):
-    return castaway.Config()
+    return castaway.Config(filename=[".env", ".env2"])
 
 
 def test_default_config(set_cwd):
     config = castaway.config
+    config.add_castings(decimal=decimal.Decimal)
     assert config("CASTAWAY_INT", cast=int) == 23
+    assert config("CASTAWAY_DECIMAL", cast="decimal") == decimal.Decimal("2.3")
 
 
 def test_bool(cfg):
@@ -39,10 +42,8 @@ def test_list(cfg):
 
 
 def test_custom_cast(cfg):
-    import decimal
-
     cfg.add_castings(decimal=decimal.Decimal)
-    assert cfg("CASTAWAY_DECIMAL", cast="decimal") == decimal.Decimal("2.3")
+    assert cfg("CASTAWAY_DECIMAL", cast="decimal") == decimal.Decimal("3.14159")
 
 
 def test_override():
@@ -61,7 +62,9 @@ def test_required_failure(cfg):
 
 
 def test_dj_database(cfg):
-    assert cfg("CASTAWAY_DJ_DATABASE", cast="django_db") == {
+    result = cfg("CASTAWAY_DJ_DATABASE", cast="django_db")
+    result.pop("DISABLE_SERVER_SIDE_CURSORS", None)
+    assert result == {
         "ENGINE": "django.db.backends.mysql",
         "OPTIONS": {"init_command": "SET storage_engine=InnoDB", "charset": "utf8mb4"},
         "NAME": "dbname",

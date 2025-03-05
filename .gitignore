@@ -1,9 +1,11 @@
 *.pyc
-.tox/
+/.tox
 .coverage
 __pycache__
-castaway.egg-info/
-venv/
-htmlcov/
-temp/
+/src/castaway.egg-info
+/venv
+/htmlcov
+/temp
+/dist
+/.pytest_cache
 .python-version
